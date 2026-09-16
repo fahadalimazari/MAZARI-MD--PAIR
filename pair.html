@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAZARI-MD | Server Select</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===============================
+   MAZARI-MD PREMIUM VIP UI
+   =============================== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    background: #030303;
+    color: #fff;
+    padding: 20px;
+    background-image: 
+        radial-gradient(circle at 15% 15%, rgba(220, 20, 40, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(220, 20, 40, 0.05) 0%, transparent 40%);
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Ambient Background Glow Behind Card */
+body::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(180, 10, 30, 0.12) 0%, transparent 60%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 440px;
+    background: rgba(12, 12, 14, 0.65);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border-radius: 20px;
+    padding: 40px 32px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.8), 
+        0 0 0 1px rgba(255, 50, 70, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    animation: cardEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+@keyframes cardEnter {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Typography */
+h1 {
+    font-size: 1.85rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 2px;
+    color: #f0f0f0;
+}
+h1 span.red {
+    color: #e6192b;
+    text-shadow: 0 0 15px rgba(230, 25, 43, 0.4);
+}
+
+.subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+    margin-bottom: 32px;
+    font-weight: 500;
+}
+
+/* Form Group */
+.form-group {
+    text-align: left;
+    margin-bottom: 22px;
+}
+
+label {
+    display: block;
+    font-size: 0.7rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 10px;
+    font-weight: 500;
+    margin-left: 2px;
+}
+
+/* Inputs & Selects */
+select, input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: #fff;
+    padding: 16px 18px;
+    border-radius: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.3s ease;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 18px center;
+    background-size: 16px;
+    padding-right: 44px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+select option {
+    background: #0f0f12;
+    color: #fff;
+    padding: 14px;
+    font-size: 0.9rem;
+}
+
+select:focus, input:focus {
+    border-color: rgba(230, 25, 43, 0.4);
+    box-shadow: 0 0 25px rgba(230, 25, 43, 0.1);
+    background: rgba(0, 0, 0, 0.7);
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.25);
+    letter-spacing: 0.5px;
+}
+
+input {
+    letter-spacing: 1px;
+}
+
+/* Button */
+button.primary-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #a30e1b 0%, #d11326 100%);
+    color: #fff;
+    border: 1px solid rgba(255, 100, 100, 0.1);
+    padding: 16px;
+    border-radius: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    box-shadow: 0 10px 30px rgba(200, 20, 40, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+button.primary-btn::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transition: 0.5s;
+}
+
+button.primary-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(220, 20, 40, 0.3);
+    background: linear-gradient(135deg, #bd1120 0%, #e8152a 100%);
+    border-color: rgba(255, 100, 100, 0.2);
+}
+
+button.primary-btn:hover:not(:disabled)::after {
+    left: 100%;
+}
+
+button.primary-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+button.primary-btn:disabled {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.3);
+    border-color: transparent;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Spinner */
+.spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-top: 2px solid #fff;
+    border-radius: 50%;
+    animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    display: none;
+}
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* Result Box */
+.result-box {
+    margin-top: 28px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 14px;
+    padding: 28px 24px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.result-label {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.code-display {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 8px;
+    color: #fff;
+    user-select: all;
+    font-family: monospace;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.error-display {
+    color: #ff3344;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+button.copy-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+button.copy-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Elegant Divider */
+.divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+    margin: 28px 0 20px;
+}
+
+/* Footer Badges */
+.badge-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.badge {
+    padding: 6px 16px;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    font-size: 0.6rem;
+    letter-spacing: 1.5px;
+    color: rgba(255, 255, 255, 0.35);
+    text-transform: uppercase;
+}
+
+/* ===============================
+   RESPONSIVE BREAKPOINTS
+   =============================== */
+
+/* Tablet & Landscape Mobile (481px - 768px) */
+@media (max-width: 768px) {
+    .card {
+        padding: 36px 28px;
+    }
+}
+
+/* Standard Mobile (<= 480px) */
+@media (max-width: 480px) {
+    body { padding: 16px; }
+    
+    .card {
+        padding: 32px 20px;
+        border-radius: 16px;
+    }
+    
+    body::before { display: none; } /* Remove ambient glow on small screens for performance */
+    
+    h1 { font-size: 1.6rem; }
+    
+    .subtitle { margin-bottom: 24px; font-size: 0.7rem; }
+    
+    select, input { padding: 14px 16px; font-size: 0.9rem; }
+    
+    button.primary-btn { padding: 14px; font-size: 0.9rem; }
+    
+    .code-display { font-size: 1.5rem; letter-spacing: 6px; }
+    
+    button.copy-btn { padding: 10px 20px; font-size: 0.75rem; }
+}
+
+/* Extremely Small Mobile (<= 360px) */
+@media (max-width: 360px) {
+    .card { padding: 24px 16px; }
+    h1 { font-size: 1.4rem; }
+    .badge { font-size: 0.55rem; padding: 4px 12px; }
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+    <h1>MAZARI<span class="red">MD</span></h1>
+    <div class="subtitle">Secure Pairing Gateway</div>
+
+    <div class="form-group">
+        <label for="serverSelect">Server</label>
+        <select id="serverSelect">
+            <!-- Populated via JS -->
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="number">WhatsApp Number</label>
+        <input type="text" id="number" placeholder="Enter number (e.g. 923...)">
+    </div>
+
+    <button id="actionBtn" class="primary-btn" onclick="getCode()">
+        <span class="spinner" id="spinner"></span>
+        <span id="btnText">Get Pair Code</span>
+    </button>
+
+    <div class="result-box" id="resultBox">
+        <!-- Success state -->
+        <div id="successView" style="display: none; width: 100%; flex-direction: column; align-items: center; gap: 12px;">
+            <div class="result-label">Pairing Code</div>
+            <div class="code-display" id="codeDisplay">----</div>
+            <button class="copy-btn" id="copyBtn" onclick="copyCode()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span id="copyText">COPY CODE</span>
+            </button>
+        </div>
+        <!-- Error state -->
+        <div id="errorView" style="display: none; width: 100%; text-align: center;">
+            <div class="error-display" id="errorDisplay">Error</div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="badge-group">
+        <span class="badge">WHATSAPP BOT</span>
+        <span class="badge">V2.0</span>
+        <span class="badge">SECURE</span>
+    </div>
+</div>
+
+<script>
+// ==========================================
+// SERVER CONFIGURATION
+// ==========================================
+// IMPORTANT: Only verified URLs are added here.
+// URLs for Servers 02-48 MUST be provided to complete the routing map.
+const SERVERS = [
+  { name: "Server 01", url: "https://mazari-bot-01-f026a4cd53d1.herokuapp.com" },
+  { name: "Server 02", url: "https://mazari-bot-02-4229c3de13cc.herokuapp.com" },
+  { name: "Server 03", url: "https://mazari-bot-03-20cdc505b493.herokuapp.com" },
+  { name: "Server 04", url: "https://mazari-bot-04-0b8d550a00ec.herokuapp.com" },
+  { name: "Server 05", url: "https://mazari-bot-05-332365fee9f6.herokuapp.com" },
+  { name: "Server 06", url: "https://mazari-bot-06-9f991bbd2bfc.herokuapp.com" },
+  { name: "Server 07", url: "https://mazari-bot-07-14871007c50f.herokuapp.com" },
+  { name: "Server 08", url: "https://mazari-bot-08-79010111441b.herokuapp.com" },
+  { name: "Server 09", url: "https://mazari-bot-09-f27b1333dfb3.herokuapp.com" },
+  { name: "Server 10", url: "https://mazari-bot-10-036a7b753d89.herokuapp.com" },
+  { name: "Server 11", url: "https://mazari-bot-11-078192affcee.herokuapp.com" },
+  { name: "Server 12", url: "https://mazari-bot-12-9fa914f669d7.herokuapp.com" },
+  { name: "Server 13", url: "https://mazari-bot-13-1a8bc74269c7.herokuapp.com" },
+  { name: "Server 14", url: "https://mazari-bot-14-8b2687f326b2.herokuapp.com" },
+  { name: "Server 15", url: "https://mazari-bot-15-79177262fa07.herokuapp.com" },
+  { name: "Server 16", url: "https://mazari-bot-16-e495309df151.herokuapp.com" },
+  { name: "Server 17", url: "https://mazari-bot-17-1485e858ee28.herokuapp.com" },
+  { name: "Server 18", url: "https://mazari-bot-18-a17bd06b73eb.herokuapp.com" },
+  { name: "Server 19", url: "https://mazari-bot-19-3b7fe4df963b.herokuapp.com" },
+  { name: "Server 20", url: "https://mazari-bot-20-94624274e4e8.herokuapp.com" },
+  { name: "Server 21", url: "https://mazari-bot-21-f004519eb609.herokuapp.com" },
+  { name: "Server 22", url: "https://mazari-bot-22-d6a73f135972.herokuapp.com" },
+  { name: "Server 23", url: "https://mazari-bot-23-f5300bd8abf9.herokuapp.com" },
+  { name: "Server 24", url: "https://mazari-bot-24-4fa34b575d0c.herokuapp.com" },
+  { name: "Server 25", url: "https://mazari-bot-25-8a125d4d49cb.herokuapp.com" },
+  { name: "Server 26", url: "https://mazari-bot-26-dd0238e4a86e.herokuapp.com" },
+  { name: "Server 27", url: "https://mazari-bot-27-8c415849bd43.herokuapp.com" },
+  { name: "Server 28", url: "https://mazari-bot-28-eb9524a0ba52.herokuapp.com" },
+  { name: "Server 29", url: "https://mazari-bot-29-a0c9526522cb.herokuapp.com" },
+  { name: "Server 30", url: "https://mazari-bot-30-6de49455c489.herokuapp.com" },
+  { name: "Server 31", url: "https://mazari-bot-31-1fc44228fe32.herokuapp.com" },
+  { name: "Server 32", url: "https://mazari-bot-32-54cfd2ea5c04.herokuapp.com" },
+  { name: "Server 33", url: "https://mazari-bot-33-71332da71939.herokuapp.com" },
+  { name: "Server 34", url: "https://mazari-bot-34-1f12ae2ac13c.herokuapp.com" },
+  { name: "Server 35", url: "https://mazari-bot-35-bdadea77c5a3.herokuapp.com" },
+  { name: "Server 36", url: "https://mazari-bot-36-9a48c9e55954.herokuapp.com" },
+  { name: "Server 37", url: "https://mazari-bot-37-f1e0cdaf8658.herokuapp.com" },
+  { name: "Server 38", url: "https://mazari-bot-38-8379a844a0ab.herokuapp.com" },
+  { name: "Server 39", url: "https://mazari-bot-39-0bfa448cfb99.herokuapp.com" },
+  { name: "Server 40", url: "https://mazari-bot-40-8472329bcf93.herokuapp.com" },
+  { name: "Server 41", url: "https://mazari-bot-41-f9b8f269d161.herokuapp.com" },
+  { name: "Server 42", url: "https://mazari-bot-42-49094ffb596a.herokuapp.com" },
+  { name: "Server 43", url: "https://mazari-bot-43-16d29632211e.herokuapp.com" },
+  { name: "Server 44", url: "https://mazari-bot-44-3e346d98ce03.herokuapp.com" },
+  { name: "Server 45", url: "https://mazari-bot-45-636eb257d34c.herokuapp.com" },
+  { name: "Server 46", url: "https://mazari-bot-46-461000991742.herokuapp.com" },
+  { name: "Server 47", url: "https://mazari-bot-47-4931fe88d456.herokuapp.com" },
+  { name: "Server 48", url: "https://mazari-bot-48-3bdf66aa2289.herokuapp.com" }
+];
+
+// Initialize Dropdown
+const serverSelect = document.getElementById('serverSelect');
+SERVERS.forEach(server => {
+    const option = document.createElement('option');
+    option.value = server.url;
+    option.textContent = server.name;
+    serverSelect.appendChild(option);
+});
+
+// UI Elements
+const numberInput = document.getElementById('number');
+const actionBtn = document.getElementById('actionBtn');
+const btnText = document.getElementById('btnText');
+const spinner = document.getElementById('spinner');
+const resultBox = document.getElementById('resultBox');
+const successView = document.getElementById('successView');
+const errorView = document.getElementById('errorView');
+const codeDisplay = document.getElementById('codeDisplay');
+const errorDisplay = document.getElementById('errorDisplay');
+const copyBtn = document.getElementById('copyBtn');
+const copyText = document.getElementById('copyText');
+
+let currentCode = "";
+
+// ==========================================
+// PAIRING LOGIC
+// ==========================================
+async function getCode() {
+    const num = numberInput.value.replace(/[^0-9]/g, '');
+    const selectedUrl = serverSelect.value;
+    const selectedServerName = serverSelect.options[serverSelect.selectedIndex].text.split('•')[0].trim();
+
+    if (!num) {
+        showError("PLEASE ENTER YOUR WHATSAPP NUMBER");
+        return;
+    }
+
+    // Set Loading State
+    actionBtn.disabled = true;
+    spinner.style.display = "block";
+    btnText.innerText = `Connecting to ${selectedServerName}...`;
+    resultBox.style.display = "none";
+    successView.style.display = "none";
+    errorView.style.display = "none";
+
+    try {
+        // Construct URL safely for frontend routing
+        // If testing locally (empty url), it defaults to relative path
+        const endpoint = selectedUrl ? new URL('/code', selectedUrl).toString() : '/code';
+        const targetUrl = `${endpoint}?number=${num}`;
+
+        const res = await fetch(targetUrl);
+        const data = await res.json();
+        
+        if (data.code) {
+            currentCode = data.code;
+            codeDisplay.innerText = data.code;
+            resultBox.style.display = "flex";
+            successView.style.display = "flex";
+        } else if (data.status === "server_full") {
+            showError("SERVER FULL");
+        } else if (data.error) {
+            showError(data.error);
+        } else {
+            showError("NO CODE RECEIVED");
+        }
+    } catch (e) {
+        showError("UNABLE TO CONNECT TO THE SELECTED SERVER. PLEASE TRY AGAIN.");
+    } finally {
+        // Restore Button State
+        actionBtn.disabled = false;
+        spinner.style.display = "none";
+        btnText.innerText = "Get Pair Code";
+    }
+}
+
+function showError(msg) {
+    errorDisplay.innerText = msg;
+    resultBox.style.display = "flex";
+    errorView.style.display = "block";
+}
+
+async function copyCode() {
+    if (!currentCode) return;
+    try {
+        await navigator.clipboard.writeText(currentCode);
+        copyText.innerText = "✓ COPIED";
+        copyBtn.style.background = "rgba(50, 200, 100, 0.2)";
+        copyBtn.style.borderColor = "rgba(50, 200, 100, 0.4)";
+        copyBtn.style.color = "#4ade80";
+        
+        setTimeout(() => {
+            copyText.innerText = "COPY CODE";
+            copyBtn.style.background = "rgba(255, 255, 255, 0.1)";
+            copyBtn.style.borderColor = "rgba(255, 255, 255, 0.1)";
+            copyBtn.style.color = "#fff";
+        }, 2000);
+    } catch (err) {
+        console.error('Failed to copy text: ', err);
+    }
+}
+
+// Enter key support
+numberInput.addEventListener("keydown", function(e) {
+    if (e.key === "Enter" && !actionBtn.disabled) {
+        e.preventDefault();
+        getCode();
+    }
+});
+</script>
+</body>
+</html>
