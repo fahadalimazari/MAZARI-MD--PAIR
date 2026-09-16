@@ -3,439 +3,688 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MAZARI-MD | Server Select</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>MAZARI-MD | Professional Pairing Gateway</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 <style>
 /* ===============================
    MAZARI-MD PREMIUM VIP UI
    =============================== */
+:root {
+    --bg-dark: #050505;
+    --card-bg: rgba(15, 15, 17, 0.7);
+    --primary-red: #d11326;
+    --primary-red-hover: #e8152a;
+    --text-main: #f5f5f5;
+    --text-muted: #888888;
+    --border-color: rgba(255, 255, 255, 0.08);
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Poppins', sans-serif;
-    background: #030303;
-    color: #fff;
-    padding: 20px;
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-main);
     background-image: 
-        radial-gradient(circle at 15% 15%, rgba(220, 20, 40, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 85% 85%, rgba(220, 20, 40, 0.05) 0%, transparent 40%);
-    position: relative;
+        radial-gradient(circle at top right, rgba(209, 19, 38, 0.08), transparent 40%),
+        radial-gradient(circle at bottom left, rgba(209, 19, 38, 0.05), transparent 40%);
     overflow-x: hidden;
+    line-height: 1.6;
 }
 
-/* Ambient Background Glow Behind Card */
-body::before {
-    content: '';
-    position: absolute;
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+
+/* Ambient Glow */
+.ambient-glow {
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(180, 10, 30, 0.12) 0%, transparent 60%);
+    width: 80vw;
+    height: 80vh;
+    background: radial-gradient(circle, rgba(209, 19, 38, 0.03) 0%, transparent 60%);
     z-index: 0;
     pointer-events: none;
 }
 
-.card {
+/* ================= Navbar ================= */
+.navbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 70px;
+    background: rgba(5, 5, 5, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5%;
+    z-index: 100;
+}
+
+.nav-brand {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+.nav-brand span { color: var(--primary-red); }
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.3s;
     position: relative;
-    z-index: 1;
+}
+
+.nav-links a:hover, .nav-links a.active {
+    color: var(--text-main);
+}
+.nav-links a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -25px;
+    left: 0; width: 100%;
+    height: 2px;
+    background: var(--primary-red);
+    box-shadow: 0 -2px 10px rgba(209, 19, 38, 0.5);
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.status-indicator {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.03);
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+}
+.dot {
+    width: 6px; height: 6px;
+    background: #4ade80;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+}
+.dot.pulse {
+    animation: pulse 1.5s infinite;
+    background: #facc15;
+    box-shadow: 0 0 8px rgba(250, 204, 21, 0.5);
+}
+@keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.4); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(250, 204, 21, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); }
+}
+
+.channel-btn {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-main);
+    text-decoration: none;
+    padding: 8px 16px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    transition: all 0.3s;
+}
+.channel-btn:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+/* ================= Hero ================= */
+.hero {
+    margin-top: 120px;
+    text-align: center;
+    padding: 0 20px;
+    position: relative;
+    z-index: 10;
+}
+.badge-small {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--primary-red);
+    background: rgba(209, 19, 38, 0.1);
+    padding: 6px 16px;
+    border-radius: 30px;
+    border: 1px solid rgba(209, 19, 38, 0.2);
+    margin-bottom: 20px;
+}
+.hero h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 12px;
+}
+.hero p {
+    color: var(--text-muted);
+    font-size: 1rem;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* ================= Main Card ================= */
+.main-container {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    position: relative;
+    z-index: 10;
+}
+.connection-card {
     width: 100%;
-    max-width: 440px;
-    background: rgba(12, 12, 14, 0.65);
+    max-width: 480px;
+    background: var(--card-bg);
     backdrop-filter: blur(28px);
     -webkit-backdrop-filter: blur(28px);
+    border-radius: 16px;
+    padding: 40px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.connection-card h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+.connection-card .subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 30px;
+}
+
+/* Steps Indicator */
+.steps-indicator {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 35px;
+    position: relative;
+}
+.steps-indicator::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 0; right: 0;
+    height: 1px;
+    background: var(--border-color);
+    z-index: 1;
+}
+.step {
+    position: relative;
+    z-index: 2;
+    background: #0f0f11;
+    padding: 4px 12px;
     border-radius: 20px;
-    padding: 40px 32px;
-    text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    box-shadow: 
-        0 20px 60px rgba(0, 0, 0, 0.8), 
-        0 0 0 1px rgba(255, 50, 70, 0.05),
-        inset 0 1px 0 rgba(255, 255, 255, 0.03);
-    animation: cardEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    opacity: 0;
-    transform: translateY(20px);
-}
-
-@keyframes cardEnter {
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Typography */
-h1 {
-    font-size: 1.85rem;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    margin-bottom: 2px;
-    color: #f0f0f0;
-}
-h1 span.red {
-    color: #e6192b;
-    text-shadow: 0 0 15px rgba(230, 25, 43, 0.4);
-}
-
-.subtitle {
-    font-size: 0.75rem;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.45);
-    margin-bottom: 32px;
-    font-weight: 500;
-}
-
-/* Form Group */
-.form-group {
-    text-align: left;
-    margin-bottom: 22px;
-}
-
-label {
-    display: block;
     font-size: 0.7rem;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.5);
-    margin-bottom: 10px;
     font-weight: 500;
-    margin-left: 2px;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s;
+}
+.step.active {
+    color: var(--text-main);
+    border-color: var(--primary-red);
+    box-shadow: 0 0 15px rgba(209, 19, 38, 0.2);
 }
 
-/* Inputs & Selects */
+/* Form Elements */
+.form-group {
+    margin-bottom: 24px;
+    text-align: left;
+}
+.form-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-main);
+    margin-bottom: 4px;
+}
+.input-subtext {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
 select, input {
     width: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    color: #fff;
-    padding: 16px 18px;
-    border-radius: 12px;
-    font-family: 'Poppins', sans-serif;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 14px 16px;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
     font-size: 0.95rem;
     outline: none;
     transition: all 0.3s ease;
     appearance: none;
-    -webkit-appearance: none;
 }
-
 select {
     cursor: pointer;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
     background-repeat: no-repeat;
-    background-position: right 18px center;
+    background-position: right 16px center;
     background-size: 16px;
-    padding-right: 44px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    padding-right: 40px;
 }
-
 select option {
-    background: #0f0f12;
+    background: #0f0f11;
     color: #fff;
     padding: 14px;
-    font-size: 0.9rem;
 }
-
 select:focus, input:focus {
-    border-color: rgba(230, 25, 43, 0.4);
-    box-shadow: 0 0 25px rgba(230, 25, 43, 0.1);
-    background: rgba(0, 0, 0, 0.7);
+    border-color: var(--primary-red);
+    box-shadow: 0 0 0 1px var(--primary-red);
+    background: rgba(0, 0, 0, 0.6);
 }
 
-input::placeholder {
-    color: rgba(255, 255, 255, 0.25);
-    letter-spacing: 0.5px;
-}
-
-input {
-    letter-spacing: 1px;
-}
-
-/* intl-tel-input dark theme overrides */
+/* intl-tel-input overrides */
 .iti { width: 100%; display: block; }
 .iti__flag-container { z-index: 5; }
 .iti__country-list {
-    background: #0f0f12;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    background: #0f0f11;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.8);
     color: #fff;
-    white-space: normal;
+    font-family: 'Inter', sans-serif;
 }
-.iti__country { padding: 10px 14px; }
-.iti__country:hover, .iti__country.iti__highlight { background: rgba(230, 25, 43, 0.2); }
-.iti__selected-flag { background: transparent; padding: 0 14px; border-radius: 12px 0 0 12px; }
-.iti__selected-flag:hover { background: rgba(255, 255, 255, 0.05); }
-.iti__dial-code { color: rgba(255, 255, 255, 0.5); }
-.iti__divider { border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+.iti__country { padding: 10px 14px; font-size: 0.85rem; }
+.iti__country:hover, .iti__country.iti__highlight { background: rgba(209, 19, 38, 0.15); }
+.iti__selected-flag { background: transparent; padding: 0 14px; border-radius: 8px 0 0 8px; }
+.iti__selected-flag:hover { background: rgba(255,255,255,0.05); }
+.iti__dial-code { color: var(--text-muted); }
+.iti__divider { border-bottom: 1px solid var(--border-color); }
 #number { padding-left: 80px !important; }
 
 /* Button */
 button.primary-btn {
     width: 100%;
-    background: linear-gradient(135deg, #a30e1b 0%, #d11326 100%);
+    background: var(--primary-red);
     color: #fff;
-    border: 1px solid rgba(255, 100, 100, 0.1);
+    border: none;
     padding: 16px;
-    border-radius: 12px;
-    font-family: 'Poppins', sans-serif;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
     font-size: 0.95rem;
     font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    margin-top: 14px;
+    transition: all 0.3s;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
-    box-shadow: 0 10px 30px rgba(200, 20, 40, 0.15);
-    position: relative;
-    overflow: hidden;
+    margin-top: 10px;
 }
-
-button.primary-btn::after {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%;
-    width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-    transition: 0.5s;
-}
-
 button.primary-btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 40px rgba(220, 20, 40, 0.3);
-    background: linear-gradient(135deg, #bd1120 0%, #e8152a 100%);
-    border-color: rgba(255, 100, 100, 0.2);
+    background: var(--primary-red-hover);
+    box-shadow: 0 8px 25px rgba(209, 19, 38, 0.3);
+    transform: translateY(-1px);
 }
-
-button.primary-btn:hover:not(:disabled)::after {
-    left: 100%;
-}
-
 button.primary-btn:active:not(:disabled) {
     transform: translateY(0);
 }
-
 button.primary-btn:disabled {
     background: rgba(255, 255, 255, 0.05);
     color: rgba(255, 255, 255, 0.3);
-    border-color: transparent;
     cursor: not-allowed;
-    box-shadow: none;
 }
 
-/* Spinner */
 .spinner {
-    width: 18px;
-    height: 18px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.2);
     border-top: 2px solid #fff;
     border-radius: 50%;
-    animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    animation: spin 0.8s linear infinite;
     display: none;
 }
-
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
 /* Result Box */
 .result-box {
-    margin-top: 28px;
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    border-radius: 14px;
-    padding: 28px 24px;
+    margin-top: 24px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 24px;
     display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 18px;
-    animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: fadeIn 0.4s ease forwards;
 }
-
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
+    from { opacity: 0; transform: translateY(5px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
+#successView {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
 .result-label {
-    font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.4);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-}
-
-.code-display {
-    font-size: 1.8rem;
-    font-weight: 700;
-    letter-spacing: 8px;
-    color: #fff;
-    user-select: all;
-    font-family: monospace;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-}
-
-.error-display {
-    color: #ff3344;
-    font-size: 0.85rem;
-    font-weight: 500;
+    font-size: 0.75rem;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 1px;
+    font-weight: 500;
 }
-
-button.copy-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+.code-display {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 6px;
     color: #fff;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-family: 'Poppins', sans-serif;
+    margin: 12px 0;
+    font-family: monospace;
+    user-select: all;
+}
+.instruction-text {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+.copy-btn {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 10px 20px;
+    border-radius: 6px;
     font-size: 0.8rem;
     font-weight: 500;
-    letter-spacing: 1px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+    margin-bottom: 20px;
+}
+.copy-btn:hover {
+    background: rgba(255,255,255,0.1);
+}
+.status-waiting {
+    font-size: 0.75rem;
+    color: var(--text-muted);
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-button.copy-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.15);
+.error-display {
+    color: #ef4444;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-align: center;
 }
 
-/* Elegant Divider */
-.divider {
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-    margin: 28px 0 20px;
+/* ================= Info Sections ================= */
+.info-section {
+    max-width: 1000px;
+    margin: 60px auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 10;
+}
+.info-section h2 {
+    text-align: center;
+    font-size: 1.6rem;
+    margin-bottom: 40px;
+    font-weight: 600;
+}
+.grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+.info-card, .feature {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+    transition: transform 0.3s, background 0.3s;
+}
+.info-card:hover, .feature:hover {
+    background: rgba(255,255,255,0.04);
+    transform: translateY(-2px);
+}
+.step-num {
+    font-size: 0.8rem;
+    color: var(--primary-red);
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+.info-card h3, .feature h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+.info-card p, .feature p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+.alternate {
+    background: rgba(0,0,0,0.3);
+    padding: 60px 20px;
+    margin: 80px 0 0 0;
+    max-width: 100%;
+    border-top: 1px solid var(--border-color);
+}
+.alternate .grid-4 {
+    max-width: 1000px;
+    margin: 0 auto;
 }
 
-/* Footer Badges */
-.badge-group {
+/* ================= Footer ================= */
+.footer {
+    text-align: center;
+    padding: 60px 20px;
+    background: var(--bg-dark);
+    position: relative;
+    z-index: 10;
+    border-top: 1px solid var(--border-color);
+}
+.footer-brand {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+.footer-brand span { color: var(--primary-red); }
+.footer p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+}
+.footer-links {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
-    gap: 10px;
+    gap: 24px;
 }
-
-.badge {
-    padding: 6px 16px;
-    border-radius: 30px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.03);
-    font-size: 0.6rem;
-    letter-spacing: 1.5px;
-    color: rgba(255, 255, 255, 0.35);
-    text-transform: uppercase;
+.footer-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.3s;
 }
+.footer-links a:hover { color: var(--text-main); }
 
-/* ===============================
-   RESPONSIVE BREAKPOINTS
-   =============================== */
-
-/* Tablet & Landscape Mobile (481px - 768px) */
-@media (max-width: 768px) {
-    .card {
-        padding: 36px 28px;
-    }
+/* ================= Responsive ================= */
+@media (max-width: 900px) {
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .nav-links { display: none; }
 }
-
-/* Standard Mobile (<= 480px) */
-@media (max-width: 480px) {
-    body { padding: 16px; }
-    
-    .card {
-        padding: 32px 20px;
-        border-radius: 16px;
-    }
-    
-    body::before { display: none; } /* Remove ambient glow on small screens for performance */
-    
-    h1 { font-size: 1.6rem; }
-    
-    .subtitle { margin-bottom: 24px; font-size: 0.7rem; }
-    
-    select, input { padding: 14px 16px; font-size: 0.9rem; }
-    
-    button.primary-btn { padding: 14px; font-size: 0.9rem; }
-    
-    .code-display { font-size: 1.5rem; letter-spacing: 6px; }
-    
-    button.copy-btn { padding: 10px 20px; font-size: 0.75rem; }
-}
-
-/* Extremely Small Mobile (<= 360px) */
-@media (max-width: 360px) {
-    .card { padding: 24px 16px; }
-    h1 { font-size: 1.4rem; }
-    .badge { font-size: 0.55rem; padding: 4px 12px; }
+@media (max-width: 600px) {
+    .grid-4 { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 2rem; }
+    .connection-card { padding: 30px 20px; }
+    .steps-indicator { display: none; }
+    .code-display { font-size: 1.8rem; letter-spacing: 4px; }
+    .nav-right .channel-btn { display: none; }
 }
 </style>
 </head>
 <body>
 
-<div class="card">
-    <h1>MAZARI<span class="red">MD</span></h1>
-    <div class="subtitle">Secure Pairing Gateway</div>
+<div class="ambient-glow"></div>
 
-    <div class="form-group">
-        <label for="serverSelect">Server</label>
-        <select id="serverSelect">
-            <!-- Populated via JS -->
-        </select>
+<!-- 1. TOP NAVBAR -->
+<nav class="navbar">
+    <div class="nav-brand">MAZARI<span>MD</span></div>
+    <div class="nav-links">
+        <a href="#" class="active">Home</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#features">Features</a>
     </div>
-
-    <div class="form-group">
-        <label for="number">WhatsApp Number</label>
-        <input type="tel" id="number" placeholder="Enter number without country code">
+    <div class="nav-right">
+        <a href="https://whatsapp.com/channel/0029VaN1c2F7j6g25yB73I1v" target="_blank" class="channel-btn">WhatsApp Channel</a>
+        <span class="status-indicator"><span class="dot"></span> PRODUCTION</span>
     </div>
+</nav>
 
-    <button id="actionBtn" class="primary-btn" onclick="getCode()">
-        <span class="spinner" id="spinner"></span>
-        <span id="btnText">Get Pair Code</span>
-    </button>
+<!-- 2. HERO SECTION -->
+<header class="hero">
+    <div class="badge-small">MAZARI MD • MULTI-SERVER WHATSAPP BOT</div>
+    <h1>Connect Your WhatsApp Bot</h1>
+    <p>Select a server, enter your WhatsApp number, and securely generate your pairing code.</p>
+</header>
 
-    <div class="result-box" id="resultBox">
-        <!-- Success state -->
-        <div id="successView" style="display: none; width: 100%; flex-direction: column; align-items: center; gap: 12px;">
-            <div class="result-label">Pairing Code</div>
-            <div class="code-display" id="codeDisplay">----</div>
-            <button class="copy-btn" id="copyBtn" onclick="copyCode()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                <span id="copyText">COPY CODE</span>
-            </button>
+<!-- 3. MAIN CONNECTION CARD -->
+<main class="main-container">
+    <div class="card connection-card">
+        <h2>Connect WhatsApp</h2>
+        <p class="subtitle">Follow the steps below to connect your account.</p>
+        
+        <div class="steps-indicator">
+            <div class="step active" id="step1">01 Select Server</div>
+            <div class="step" id="step2">02 Enter Number</div>
+            <div class="step" id="step3">03 Pair WhatsApp</div>
         </div>
-        <!-- Error state -->
-        <div id="errorView" style="display: none; width: 100%; text-align: center;">
-            <div class="error-display" id="errorDisplay">Error</div>
+
+        <!-- 4. SERVER SELECTION -->
+        <div class="form-group" id="servers">
+            <label for="serverSelect">Select Server</label>
+            <p class="input-subtext">Choose a server to host your bot session.</p>
+            <select id="serverSelect" onchange="updateStep(2)"></select>
+        </div>
+
+        <!-- 5. NUMBER INPUT -->
+        <div class="form-group">
+            <label for="number">WhatsApp Number</label>
+            <p class="input-subtext">Enter the number you want to connect.</p>
+            <input type="tel" id="number" placeholder="Enter number without country code" oninput="updateStep(2)">
+        </div>
+
+        <!-- 6. PAIR BUTTON -->
+        <button id="actionBtn" class="primary-btn" onclick="getCode()">
+            <span class="spinner" id="spinner"></span>
+            <span id="btnText">Generate Pairing Code</span>
+        </button>
+
+        <!-- 7. PAIRING CODE RESULT -->
+        <div class="result-box" id="resultBox">
+            <div id="successView" style="display: none;">
+                <div class="result-label">Pairing Code</div>
+                <div class="code-display" id="codeDisplay">----</div>
+                <p class="instruction-text">Open WhatsApp → Linked Devices → Link a Device → Enter this code.</p>
+                <button class="copy-btn" id="copyBtn" onclick="copyCode()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    <span id="copyText">COPY CODE</span>
+                </button>
+                <div class="status-waiting"><span class="dot pulse"></span> Waiting for WhatsApp connection</div>
+            </div>
+            <div id="errorView" style="display: none;">
+                <div class="error-display" id="errorDisplay">Error</div>
+            </div>
         </div>
     </div>
+</main>
 
-    <div class="divider"></div>
-
-    <div class="badge-group">
-        <span class="badge">WHATSAPP BOT</span>
-        <span class="badge">V2.0</span>
-        <span class="badge">SECURE</span>
+<!-- 8. HOW IT WORKS -->
+<section id="how-it-works" class="info-section">
+    <h2>How It Works</h2>
+    <div class="grid-4">
+        <div class="info-card">
+            <div class="step-num">01</div>
+            <h3>Select Server</h3>
+            <p>Choose an available MAZARI MD server from the dropdown.</p>
+        </div>
+        <div class="info-card">
+            <div class="step-num">02</div>
+            <h3>Enter Number</h3>
+            <p>Select your country and enter your WhatsApp number.</p>
+        </div>
+        <div class="info-card">
+            <div class="step-num">03</div>
+            <h3>Generate Code</h3>
+            <p>Securely request your official WhatsApp pairing code.</p>
+        </div>
+        <div class="info-card">
+            <div class="step-num">04</div>
+            <h3>Connect</h3>
+            <p>Enter the code inside WhatsApp Linked Devices.</p>
+        </div>
     </div>
-</div>
+</section>
+
+<!-- 9. FEATURES / TRUST SECTION -->
+<section id="features" class="info-section alternate">
+    <div class="grid-4">
+        <div class="feature">
+            <h4>Multi-Session</h4>
+            <p>Run independent WhatsApp sessions concurrently.</p>
+        </div>
+        <div class="feature">
+            <h4>Server Isolation</h4>
+            <p>Sessions remain strictly isolated between physical servers.</p>
+        </div>
+        <div class="feature">
+            <h4>Secure Pairing</h4>
+            <p>Pair exclusively using WhatsApp's official linking flow.</p>
+        </div>
+        <div class="feature">
+            <h4>Production Ready</h4>
+            <p>Designed for continuous, stable bot session management.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 11. FOOTER -->
+<footer class="footer">
+    <div class="footer-brand">MAZARI<span>MD</span></div>
+    <p>Professional multi-session WhatsApp bot infrastructure.</p>
+    <div class="footer-links">
+        <a href="#">Home</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="https://whatsapp.com/channel/0029VaN1c2F7j6g25yB73I1v" target="_blank">WhatsApp Channel</a>
+    </div>
+</footer>
 
 <script>
 // ==========================================
 // SERVER CONFIGURATION
 // ==========================================
-// IMPORTANT: Only verified URLs are added here.
-// URLs for Servers 02-48 MUST be provided to complete the routing map.
 const SERVERS = [
   { name: "Server 01", url: "https://mazari-bot-01-f026a4cd53d1.herokuapp.com" },
   { name: "Server 02", url: "https://mazari-bot-02-4229c3de13cc.herokuapp.com" },
@@ -517,8 +766,14 @@ const iti = window.intlTelInput(numberInput, {
     utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
 });
 
+function updateStep(stepNum) {
+    if(stepNum === 2 && numberInput.value.length > 3) {
+        document.getElementById('step2').classList.add('active');
+    }
+}
+
 // ==========================================
-// PAIRING LOGIC
+// PAIRING LOGIC (100% PRESERVED)
 // ==========================================
 async function getCode() {
     // Get fully formatted E.164 number and strip everything except digits
@@ -539,14 +794,15 @@ async function getCode() {
     // Set Loading State
     actionBtn.disabled = true;
     spinner.style.display = "block";
-    btnText.innerText = `Connecting to ${selectedServerName}...`;
+    btnText.innerText = `Connecting...`;
     resultBox.style.display = "none";
     successView.style.display = "none";
     errorView.style.display = "none";
+    
+    document.getElementById('step3').classList.add('active');
 
     try {
         // Construct URL safely for frontend routing
-        // If testing locally (empty url), it defaults to relative path
         const endpoint = selectedUrl ? new URL('/code', selectedUrl).toString() : '/code';
         const targetUrl = `${endpoint}?number=${fullNumber}`;
 
@@ -556,7 +812,7 @@ async function getCode() {
         if (data.code) {
             currentCode = data.code;
             codeDisplay.innerText = data.code;
-            resultBox.style.display = "flex";
+            resultBox.style.display = "block";
             successView.style.display = "flex";
         } else if (data.status === "server_full") {
             showError("SERVER FULL");
@@ -571,30 +827,31 @@ async function getCode() {
         // Restore Button State
         actionBtn.disabled = false;
         spinner.style.display = "none";
-        btnText.innerText = "Get Pair Code";
+        btnText.innerText = "Generate Pairing Code";
     }
 }
 
 function showError(msg) {
     errorDisplay.innerText = msg;
-    resultBox.style.display = "flex";
+    resultBox.style.display = "block";
     errorView.style.display = "block";
+    document.getElementById('step3').classList.remove('active');
 }
 
 async function copyCode() {
     if (!currentCode) return;
     try {
         await navigator.clipboard.writeText(currentCode);
-        copyText.innerText = "✓ COPIED";
-        copyBtn.style.background = "rgba(50, 200, 100, 0.2)";
-        copyBtn.style.borderColor = "rgba(50, 200, 100, 0.4)";
+        copyText.innerText = "COPIED";
+        copyBtn.style.background = "rgba(74, 222, 128, 0.1)";
+        copyBtn.style.borderColor = "rgba(74, 222, 128, 0.3)";
         copyBtn.style.color = "#4ade80";
         
         setTimeout(() => {
             copyText.innerText = "COPY CODE";
-            copyBtn.style.background = "rgba(255, 255, 255, 0.1)";
-            copyBtn.style.borderColor = "rgba(255, 255, 255, 0.1)";
-            copyBtn.style.color = "#fff";
+            copyBtn.style.background = "rgba(255, 255, 255, 0.05)";
+            copyBtn.style.borderColor = "var(--border-color)";
+            copyBtn.style.color = "var(--text-main)";
         }, 2000);
     } catch (err) {
         console.error('Failed to copy text: ', err);
