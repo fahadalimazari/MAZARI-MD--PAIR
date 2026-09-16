@@ -12,7 +12,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const pairRouter = require('./main');
+const pairRouter = require('./router');
 app.use('/', pairRouter);
 
 const startServer = async () => {
