@@ -521,20 +521,20 @@ const iti = window.intlTelInput(numberInput, {
 // PAIRING LOGIC
 // ==========================================
 async function getCode() {
-    if (!iti.isValidNumber()) {
+    // Get fully formatted E.164 number and strip everything except digits
+    const fullNumber = iti.getNumber().replace(/[^0-9]/g, '');
+    const countryData = iti.getSelectedCountryData();
+    const dialCode = countryData.dialCode || "";
+    
+    // Validate that it has a real country code and a reasonable subscriber number length (e.g., at least 7 digits)
+    const subscriberNumberLength = fullNumber.length - dialCode.length;
+    if (!fullNumber || !dialCode || subscriberNumberLength < 7) {
         showError("PLEASE ENTER A VALID WHATSAPP NUMBER");
         return;
     }
 
-    // Get fully formatted E.164 number and strip everything except digits
-    const fullNumber = iti.getNumber().replace(/[^0-9]/g, '');
     const selectedUrl = serverSelect.value;
     const selectedServerName = serverSelect.options[serverSelect.selectedIndex].text.split('•')[0].trim();
-
-    if (!fullNumber) {
-        showError("PLEASE ENTER YOUR WHATSAPP NUMBER");
-        return;
-    }
 
     // Set Loading State
     actionBtn.disabled = true;
