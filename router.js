@@ -152,11 +152,36 @@ async function arslanPair(number, res = null) {
         socketCreationTime.set(sanitizedNumber, Date.now());
         activeSockets.set(sanitizedNumber, conn);
 
+        let onIqError;
+
         // ========== PAIRING ==========
         if (!conn.authState.creds.registered) {
             arslanLog(`Starting NEW pairing process for ${sanitizedNumber}`, 'info');
             try {
                 await delay(1500);
+
+                // Attach temporary listener to catch asynchronous IQ rejections (e.g. 429 rate-overlimit)
+                onIqError = (stanza) => {
+                    const errorNode = stanza?.content?.[0];
+                    if (errorNode?.tag === 'error') {
+                        const code = errorNode.attrs?.code;
+                        const text = errorNode.attrs?.text;
+                        
+                        if (code === '429' || code === '401' || code === '403') {
+                            arslanLog(`WhatsApp backend REJECTED pairing for ${sanitizedNumber}: ${code} ${text}`, 'error');
+                            if (conn.isCancelled) return;
+                            conn.isCancelled = true;
+                            
+                            if (activeSockets.get(sanitizedNumber) === conn) {
+                                activeSockets.delete(sanitizedNumber);
+                                socketCreationTime.delete(sanitizedNumber);
+                            }
+                            try { conn.ws.close(); } catch (e) {}
+                        }
+                    }
+                };
+                conn.ws.on('CB:iq,type:error', onIqError);
+
                 const code = await conn.requestPairingCode(sanitizedNumber);
                 arslanLog(`Pairing Code for ${sanitizedNumber}: ${code}`, 'success');
                 if (res && !res.headersSent) {
@@ -205,12 +230,14 @@ async function arslanPair(number, res = null) {
             if (connection === 'open') {
                 arslanLog(`Connected: ${sanitizedNumber}`, 'success');
                 await addNumberToPostgres(sanitizedNumber);
+                if (onIqError) conn.ws?.removeListener('CB:iq,type:error', onIqError);
             }
             if (connection === 'close') {
                 const reason = lastDisconnect?.error?.output?.statusCode;
                 arslanLog(`Connection closed for ${sanitizedNumber}, reason: ${reason}`, 'warning');
                 activeSockets.delete(sanitizedNumber);
                 socketCreationTime.delete(sanitizedNumber);
+                if (onIqError) conn.ws?.removeListener('CB:iq,type:error', onIqError);
             }
         });
 
