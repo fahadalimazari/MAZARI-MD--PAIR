@@ -234,10 +234,22 @@ async function arslanPair(number, res = null) {
             }
             if (connection === 'close') {
                 const reason = lastDisconnect?.error?.output?.statusCode;
-                arslanLog(`Connection closed for ${sanitizedNumber}, reason: ${reason}`, 'warning');
+                
                 activeSockets.delete(sanitizedNumber);
                 socketCreationTime.delete(sanitizedNumber);
                 if (onIqError) conn.ws?.removeListener('CB:iq,type:error', onIqError);
+
+                if (reason === DisconnectReason.restartRequired) {
+                    arslanLog(`Restart required for ${sanitizedNumber} (515). Reconnecting to finalize pairing...`, 'info');
+                    setTimeout(() => arslanPair(sanitizedNumber), 2000);
+                } else if (reason === DisconnectReason.loggedOut) {
+                    arslanLog(`Connection logged out for ${sanitizedNumber}, reason: ${reason}`, 'warning');
+                    deleteSessionFromPostgres(sanitizedNumber).catch(() => {});
+                    removeNumberFromPostgres(sanitizedNumber).catch(() => {});
+                    fs.remove(sessionPath).catch(() => {});
+                } else {
+                    arslanLog(`Connection closed for ${sanitizedNumber}, reason: ${reason}`, 'warning');
+                }
             }
         });
 
