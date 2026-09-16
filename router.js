@@ -60,7 +60,7 @@ async function arslanPair(number, res = null) {
         // Dynamic ESM import for Vercel compatibility
         const baileys = await import('@whiskeysockets/baileys');
         const makeWASocket = baileys.default;
-        const { useMultiFileAuthState, delay, makeCacheableSignalKeyStore, DisconnectReason, fetchLatestBaileysVersion, Browsers } = baileys;
+        const { useMultiFileAuthState, delay, makeCacheableSignalKeyStore, DisconnectReason, fetchLatestWaWebVersion, Browsers } = baileys;
 
         const sessionPath = path.join(__dirname, 'session', `session_${sanitizedNumber}`);
 
@@ -125,7 +125,7 @@ async function arslanPair(number, res = null) {
         const logger = pino({ level: 'silent' });
         const store = createStore();
 
-        const { version } = await fetchLatestBaileysVersion();
+        const { version } = await fetchLatestWaWebVersion();
 
         const conn = makeWASocket({
             version,

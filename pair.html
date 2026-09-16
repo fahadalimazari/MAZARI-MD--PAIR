@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MAZARI-MD | Server Select</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 <style>
 /* ===============================
    MAZARI-MD PREMIUM VIP UI
@@ -154,6 +156,25 @@ input::placeholder {
 input {
     letter-spacing: 1px;
 }
+
+/* intl-tel-input dark theme overrides */
+.iti { width: 100%; display: block; }
+.iti__flag-container { z-index: 5; }
+.iti__country-list {
+    background: #0f0f12;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    color: #fff;
+    white-space: normal;
+}
+.iti__country { padding: 10px 14px; }
+.iti__country:hover, .iti__country.iti__highlight { background: rgba(230, 25, 43, 0.2); }
+.iti__selected-flag { background: transparent; padding: 0 14px; border-radius: 12px 0 0 12px; }
+.iti__selected-flag:hover { background: rgba(255, 255, 255, 0.05); }
+.iti__dial-code { color: rgba(255, 255, 255, 0.5); }
+.iti__divider { border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+#number { padding-left: 80px !important; }
 
 /* Button */
 button.primary-btn {
@@ -376,7 +397,7 @@ button.copy-btn:hover {
 
     <div class="form-group">
         <label for="number">WhatsApp Number</label>
-        <input type="text" id="number" placeholder="Enter number (e.g. 923...)">
+        <input type="tel" id="number" placeholder="Enter number without country code">
     </div>
 
     <button id="actionBtn" class="primary-btn" onclick="getCode()">
@@ -487,18 +508,30 @@ const codeDisplay = document.getElementById('codeDisplay');
 const errorDisplay = document.getElementById('errorDisplay');
 const copyBtn = document.getElementById('copyBtn');
 const copyText = document.getElementById('copyText');
-
 let currentCode = "";
+
+// Setup intl-tel-input
+const iti = window.intlTelInput(numberInput, {
+    initialCountry: "pk",
+    separateDialCode: true,
+    utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+});
 
 // ==========================================
 // PAIRING LOGIC
 // ==========================================
 async function getCode() {
-    const num = numberInput.value.replace(/[^0-9]/g, '');
+    if (!iti.isValidNumber()) {
+        showError("PLEASE ENTER A VALID WHATSAPP NUMBER");
+        return;
+    }
+
+    // Get fully formatted E.164 number and strip everything except digits
+    const fullNumber = iti.getNumber().replace(/[^0-9]/g, '');
     const selectedUrl = serverSelect.value;
     const selectedServerName = serverSelect.options[serverSelect.selectedIndex].text.split('•')[0].trim();
 
-    if (!num) {
+    if (!fullNumber) {
         showError("PLEASE ENTER YOUR WHATSAPP NUMBER");
         return;
     }
@@ -515,7 +548,7 @@ async function getCode() {
         // Construct URL safely for frontend routing
         // If testing locally (empty url), it defaults to relative path
         const endpoint = selectedUrl ? new URL('/code', selectedUrl).toString() : '/code';
-        const targetUrl = `${endpoint}?number=${num}`;
+        const targetUrl = `${endpoint}?number=${fullNumber}`;
 
         const res = await fetch(targetUrl);
         const data = await res.json();
