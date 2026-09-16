@@ -3,22 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MAZARI-MD | Professional Pairing Gateway</title>
+<title>MAZARI-MD | VIP Control Infrastructure</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 <style>
 /* ===============================
-   MAZARI-MD PREMIUM VIP UI
+   MAZARI-MD VIP PREMIUM UI
    =============================== */
 :root {
-    --bg-dark: #050505;
-    --card-bg: rgba(15, 15, 17, 0.7);
+    --bg-dark: #030303;
+    --card-bg: rgba(12, 12, 14, 0.65);
     --primary-red: #d11326;
+    --primary-red-glow: rgba(209, 19, 38, 0.4);
     --primary-red-hover: #e8152a;
-    --text-main: #f5f5f5;
-    --text-muted: #888888;
-    --border-color: rgba(255, 255, 255, 0.08);
+    --text-main: #ffffff;
+    --text-muted: #999999;
+    --border-color: rgba(255, 255, 255, 0.06);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -28,256 +39,282 @@ body {
     font-family: 'Inter', sans-serif;
     background: var(--bg-dark);
     color: var(--text-main);
-    background-image: 
-        radial-gradient(circle at top right, rgba(209, 19, 38, 0.08), transparent 40%),
-        radial-gradient(circle at bottom left, rgba(209, 19, 38, 0.05), transparent 40%);
     overflow-x: hidden;
     line-height: 1.6;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--bg-dark); }
-::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+html { scroll-behavior: smooth; }
 
-/* Ambient Glow */
-.ambient-glow {
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary-red); }
+
+/* ================= BACKGROUND EFFECTS ================= */
+.bg-layer {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80vw;
-    height: 80vh;
-    background: radial-gradient(circle, rgba(209, 19, 38, 0.03) 0%, transparent 60%);
-    z-index: 0;
-    pointer-events: none;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -2;
+    background-image: 
+        radial-gradient(circle at 15% 30%, rgba(209, 19, 38, 0.06) 0%, transparent 40%),
+        radial-gradient(circle at 85% 70%, rgba(209, 19, 38, 0.04) 0%, transparent 40%);
 }
 
-/* ================= Navbar ================= */
+.bg-grid {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1;
+    background-size: 40px 40px;
+    background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    animation: bgPan 30s linear infinite;
+    mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+}
+@keyframes bgPan { from { background-position: 0 0; } to { background-position: 40px 40px; } }
+
+/* ================= SCROLL REVEAL ================= */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ================= NAVBAR & MEGA MENU ================= */
 .navbar {
     position: fixed;
     top: 0; left: 0; right: 0;
     height: 70px;
-    background: rgba(5, 5, 5, 0.8);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: rgba(3, 3, 3, 0.75);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 5%;
     z-index: 100;
+    transition: all 0.3s;
 }
 
 .nav-brand {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     font-weight: 700;
     letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
-.nav-brand span { color: var(--primary-red); }
+.nav-brand span.red { color: var(--primary-red); }
+.brand-badge {
+    font-size: 0.55rem;
+    padding: 3px 8px;
+    background: rgba(209, 19, 38, 0.15);
+    border: 1px solid rgba(209, 19, 38, 0.3);
+    border-radius: 4px;
+    color: var(--primary-red);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
 
 .nav-links {
     display: flex;
-    gap: 30px;
+    gap: 32px;
+    align-items: center;
 }
-
-.nav-links a {
+.nav-links > a, .nav-links > div.has-dropdown {
     color: var(--text-muted);
     text-decoration: none;
     font-size: 0.85rem;
     font-weight: 500;
+    cursor: pointer;
     transition: color 0.3s;
     position: relative;
+    padding: 24px 0;
 }
-
-.nav-links a:hover, .nav-links a.active {
+.nav-links > a:hover, .nav-links > a.active, .nav-links > div.has-dropdown:hover {
     color: var(--text-main);
 }
-.nav-links a.active::after {
-    content: '';
-    position: absolute;
-    bottom: -25px;
-    left: 0; width: 100%;
-    height: 2px;
+.nav-links > a.active::after {
+    content: ''; position: absolute;
+    bottom: 0; left: 0; width: 100%; height: 2px;
     background: var(--primary-red);
-    box-shadow: 0 -2px 10px rgba(209, 19, 38, 0.5);
+    box-shadow: 0 -2px 10px var(--primary-red-glow);
 }
 
-.nav-right {
+/* Mega Menu */
+.mega-menu {
+    position: absolute;
+    top: 70px; left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    width: 600px;
+    background: rgba(12, 12, 14, 0.95);
+    backdrop-filter: blur(30px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 24px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(209, 19, 38, 0.1);
+}
+.has-dropdown:hover .mega-menu {
+    opacity: 1; visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+.mega-item {
     display: flex;
-    align-items: center;
-    gap: 20px;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    cursor: pointer;
 }
+.mega-item:hover {
+    background: rgba(255,255,255,0.03);
+}
+.mega-icon {
+    font-size: 1.2rem;
+    background: rgba(209, 19, 38, 0.1);
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 8px;
+    border: 1px solid rgba(209, 19, 38, 0.2);
+    transition: transform 0.3s;
+}
+.mega-item:hover .mega-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+.mega-text h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; }
+.mega-text p { font-size: 0.7rem; color: var(--text-muted); }
 
+.nav-right { display: flex; align-items: center; gap: 20px; }
 .status-indicator {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 600;
     letter-spacing: 1px;
     color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    display: flex; align-items: center; gap: 8px;
     background: rgba(255,255,255,0.03);
     padding: 6px 12px;
     border-radius: 20px;
     border: 1px solid var(--border-color);
 }
-.dot {
-    width: 6px; height: 6px;
-    background: #4ade80;
-    border-radius: 50%;
-    box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
-}
-.dot.pulse {
-    animation: pulse 1.5s infinite;
-    background: #facc15;
-    box-shadow: 0 0 8px rgba(250, 204, 21, 0.5);
-}
-@keyframes pulse {
-    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.4); }
-    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(250, 204, 21, 0); }
-    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); }
+.dot { width: 6px; height: 6px; background: #4ade80; border-radius: 50%; box-shadow: 0 0 8px rgba(74, 222, 128, 0.5); }
+
+/* Mobile Menu */
+.mobile-menu-btn {
+    display: none;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
 }
 
-.channel-btn {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--text-main);
-    text-decoration: none;
-    padding: 8px 16px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    transition: all 0.3s;
-}
-.channel-btn:hover {
-    background: rgba(255,255,255,0.1);
-}
-
-/* ================= Hero ================= */
+/* ================= HERO ================= */
 .hero {
-    margin-top: 120px;
+    margin-top: 130px;
     text-align: center;
     padding: 0 20px;
     position: relative;
-    z-index: 10;
-}
-.badge-small {
-    display: inline-block;
-    font-size: 0.65rem;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--primary-red);
-    background: rgba(209, 19, 38, 0.1);
-    padding: 6px 16px;
-    border-radius: 30px;
-    border: 1px solid rgba(209, 19, 38, 0.2);
-    margin-bottom: 20px;
 }
 .hero h1 {
-    font-size: 2.8rem;
+    font-size: 3.5rem;
     font-weight: 700;
-    letter-spacing: -0.5px;
-    margin-bottom: 12px;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+    background: linear-gradient(to right, #fff, #aaa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 .hero p {
     color: var(--text-muted);
-    font-size: 1rem;
-    max-width: 500px;
+    font-size: 1.1rem;
+    max-width: 550px;
     margin: 0 auto;
 }
 
-/* ================= Main Card ================= */
+/* ================= MAIN CONNECTION CARD ================= */
 .main-container {
     display: flex;
     justify-content: center;
-    padding: 40px 20px;
+    padding: 50px 20px;
     position: relative;
     z-index: 10;
 }
 .connection-card {
     width: 100%;
-    max-width: 480px;
+    max-width: 500px;
     background: var(--card-bg);
-    backdrop-filter: blur(28px);
-    -webkit-backdrop-filter: blur(28px);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
     border-radius: 16px;
     padding: 40px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
-}
-
-.connection-card h2 {
-    font-size: 1.4rem;
-    font-weight: 600;
-    margin-bottom: 6px;
-}
-.connection-card .subtitle {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-bottom: 30px;
-}
-
-/* Steps Indicator */
-.steps-indicator {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 35px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 40px 80px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05);
     position: relative;
+}
+/* Card Glow */
+.connection-card::before {
+    content: ''; position: absolute;
+    top: -1px; left: -1px; right: -1px; bottom: -1px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(209,19,38,0.5), transparent 40%);
+    z-index: -1;
+    opacity: 0.3;
+}
+
+.connection-card h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 8px; }
+.connection-card .subtitle { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 35px; }
+
+/* Steps */
+.steps-indicator {
+    display: flex; justify-content: space-between; margin-bottom: 35px; position: relative;
 }
 .steps-indicator::before {
-    content: '';
-    position: absolute;
-    top: 50%; left: 0; right: 0;
-    height: 1px;
-    background: var(--border-color);
-    z-index: 1;
+    content: ''; position: absolute; top: 50%; left: 0; right: 0;
+    height: 1px; background: var(--border-color); z-index: 1;
 }
 .step {
-    position: relative;
-    z-index: 2;
-    background: #0f0f11;
-    padding: 4px 12px;
+    position: relative; z-index: 2;
+    background: var(--bg-dark);
+    padding: 4px 14px;
     border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: 500;
-    color: var(--text-muted);
+    font-size: 0.7rem; font-weight: 500;
+    color: rgba(255,255,255,0.3);
     border: 1px solid var(--border-color);
-    transition: all 0.3s;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .step.active {
     color: var(--text-main);
     border-color: var(--primary-red);
-    box-shadow: 0 0 15px rgba(209, 19, 38, 0.2);
+    box-shadow: 0 0 20px rgba(209,19,38,0.3);
+    background: rgba(209,19,38,0.1);
 }
 
-/* Form Elements */
-.form-group {
-    margin-bottom: 24px;
-    text-align: left;
-}
-.form-group label {
-    display: block;
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--text-main);
-    margin-bottom: 4px;
-}
-.input-subtext {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    margin-bottom: 10px;
-}
+/* Forms */
+.form-group { margin-bottom: 24px; text-align: left; }
+.form-group label { display: block; font-size: 0.8rem; font-weight: 500; margin-bottom: 6px; }
+.input-subtext { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 12px; }
 
 select, input {
     width: 100%;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0,0,0,0.5);
     border: 1px solid var(--border-color);
     color: var(--text-main);
-    padding: 14px 16px;
-    border-radius: 8px;
+    padding: 16px 18px;
+    border-radius: 10px;
     font-family: 'Inter', sans-serif;
     font-size: 0.95rem;
     outline: none;
@@ -287,332 +324,304 @@ select, input {
 select {
     cursor: pointer;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 16px center;
-    background-size: 16px;
+    background-repeat: no-repeat; background-position: right 18px center; background-size: 16px;
     padding-right: 40px;
 }
-select option {
-    background: #0f0f11;
-    color: #fff;
-    padding: 14px;
-}
+select option { background: #0f0f11; color: #fff; padding: 14px; }
 select:focus, input:focus {
-    border-color: var(--primary-red);
-    box-shadow: 0 0 0 1px var(--primary-red);
-    background: rgba(0, 0, 0, 0.6);
+    border-color: rgba(209,19,38,0.6);
+    box-shadow: 0 0 15px rgba(209,19,38,0.2);
+    background: rgba(0,0,0,0.8);
 }
 
-/* intl-tel-input overrides */
+/* intl-tel-input */
 .iti { width: 100%; display: block; }
 .iti__flag-container { z-index: 5; }
-.iti__country-list {
-    background: #0f0f11;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.8);
-    color: #fff;
-    font-family: 'Inter', sans-serif;
-}
+.iti__country-list { background: #0f0f11; border: 1px solid var(--border-color); border-radius: 10px; font-family: 'Inter', sans-serif; }
 .iti__country { padding: 10px 14px; font-size: 0.85rem; }
-.iti__country:hover, .iti__country.iti__highlight { background: rgba(209, 19, 38, 0.15); }
-.iti__selected-flag { background: transparent; padding: 0 14px; border-radius: 8px 0 0 8px; }
+.iti__country:hover, .iti__country.iti__highlight { background: rgba(209,19,38,0.15); }
+.iti__selected-flag { background: transparent; padding: 0 14px; }
 .iti__selected-flag:hover { background: rgba(255,255,255,0.05); }
 .iti__dial-code { color: var(--text-muted); }
 .iti__divider { border-bottom: 1px solid var(--border-color); }
 #number { padding-left: 80px !important; }
 
-/* Button */
+/* Pair Button */
 button.primary-btn {
     width: 100%;
-    background: var(--primary-red);
-    color: #fff;
-    border: none;
-    padding: 16px;
-    border-radius: 8px;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
+    background: linear-gradient(135deg, var(--primary-red), #9e0e1c);
+    color: #fff; border: 1px solid rgba(255,100,100,0.2);
+    padding: 16px; border-radius: 10px;
+    font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 600;
+    cursor: pointer; transition: all 0.3s;
+    display: flex; align-items: center; justify-content: center; gap: 12px;
     margin-top: 10px;
+    position: relative; overflow: hidden;
+}
+button.primary-btn::after {
+    content: ''; position: absolute; top: 0; left: -100%;
+    width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: 0.5s;
 }
 button.primary-btn:hover:not(:disabled) {
-    background: var(--primary-red-hover);
-    box-shadow: 0 8px 25px rgba(209, 19, 38, 0.3);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(209,19,38,0.4);
 }
-button.primary-btn:active:not(:disabled) {
-    transform: translateY(0);
-}
+button.primary-btn:hover:not(:disabled)::after { left: 100%; }
 button.primary-btn:disabled {
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.3);
-    cursor: not-allowed;
+    background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3);
+    border-color: transparent; cursor: not-allowed; box-shadow: none;
 }
 
 .spinner {
     width: 18px; height: 18px;
-    border: 2px solid rgba(255,255,255,0.2);
-    border-top: 2px solid #fff;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    display: none;
+    border: 2px solid rgba(255,255,255,0.2); border-top: 2px solid #fff;
+    border-radius: 50%; animation: spin 0.8s linear infinite; display: none;
 }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
-/* Result Box */
+/* VIP Pairing Result */
 .result-box {
     margin-top: 24px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(209,19,38,0.3);
+    border-radius: 10px;
     padding: 24px;
     display: none;
-    animation: fadeIn 0.4s ease forwards;
-}
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-#successView {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-.result-label {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 500;
-}
-.code-display {
-    font-size: 2.2rem;
-    font-weight: 700;
-    letter-spacing: 6px;
-    color: #fff;
-    margin: 12px 0;
-    font-family: monospace;
-    user-select: all;
-}
-.instruction-text {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    margin-bottom: 20px;
-}
-.copy-btn {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--border-color);
-    color: var(--text-main);
-    padding: 10px 20px;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.2s;
-    font-family: 'Inter', sans-serif;
-    margin-bottom: 20px;
-}
-.copy-btn:hover {
-    background: rgba(255,255,255,0.1);
-}
-.status-waiting {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.error-display {
-    color: #ef4444;
-    font-size: 0.85rem;
-    font-weight: 500;
-    text-align: center;
-}
-
-/* ================= Info Sections ================= */
-.info-section {
-    max-width: 1000px;
-    margin: 60px auto;
-    padding: 0 20px;
     position: relative;
-    z-index: 10;
+    box-shadow: inset 0 0 20px rgba(209,19,38,0.05);
 }
-.info-section h2 {
-    text-align: center;
-    font-size: 1.6rem;
-    margin-bottom: 40px;
-    font-weight: 600;
+.result-box::before {
+    content: ''; position: absolute;
+    top: -1px; left: -1px; right: -1px; bottom: -1px;
+    border-radius: 10px; border: 1px solid rgba(209,19,38,0.5);
+    animation: borderPulse 2s infinite; pointer-events: none;
 }
-.grid-4 {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
+@keyframes borderPulse {
+    0% { opacity: 0.5; } 50% { opacity: 1; box-shadow: 0 0 15px rgba(209,19,38,0.4); } 100% { opacity: 0.5; }
 }
-.info-card, .feature {
+
+#successView { flex-direction: column; align-items: center; text-align: center; }
+.result-label { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 2px; }
+.code-display {
+    font-size: 2.4rem; font-weight: 700; letter-spacing: 12px; margin-left: 12px;
+    color: #fff; margin: 16px 0; font-family: monospace; user-select: all;
+    text-shadow: 0 0 20px rgba(255,255,255,0.3);
+}
+.instruction-text { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 24px; }
+.copy-btn {
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border-color);
+    color: var(--text-main); padding: 12px 24px; border-radius: 8px;
+    font-size: 0.8rem; font-weight: 500; cursor: pointer;
+    display: flex; align-items: center; gap: 8px; transition: all 0.2s;
+    margin-bottom: 20px;
+}
+.copy-btn:hover { background: rgba(255,255,255,0.1); }
+.error-display { color: #ef4444; font-size: 0.85rem; font-weight: 500; text-align: center; }
+
+/* ================= FEATURE MODAL ================= */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+    z-index: 1000; display: none; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.3s;
+}
+.modal-overlay.active { opacity: 1; }
+.modal-content {
+    background: rgba(12,12,14,0.9);
+    border: 1px solid rgba(209,19,38,0.3);
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 400px; width: 90%;
+    transform: scale(0.96); transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.1);
+    position: relative;
+}
+.modal-overlay.active .modal-content { transform: scale(1); }
+.modal-close {
+    position: absolute; top: 16px; right: 16px;
+    background: none; border: none; color: var(--text-muted);
+    font-size: 1.2rem; cursor: pointer; transition: color 0.2s;
+}
+.modal-close:hover { color: #fff; }
+.modal-icon { font-size: 2rem; margin-bottom: 16px; }
+.modal-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 8px; }
+.modal-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px; }
+.modal-badge {
+    display: inline-block; font-size: 0.65rem; padding: 4px 10px;
+    background: rgba(74,222,128,0.1); color: #4ade80; border-radius: 20px;
+    border: 1px solid rgba(74,222,128,0.2); letter-spacing: 1px;
+}
+
+/* ================= SECTIONS ================= */
+.info-section { max-width: 1050px; margin: 100px auto; padding: 0 20px; }
+.info-section h2 { text-align: center; font-size: 2rem; margin-bottom: 10px; font-weight: 700; }
+.info-section .sec-sub { text-align: center; color: var(--text-muted); margin-bottom: 50px; font-size: 0.9rem; }
+
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+
+.feature-card {
     background: rgba(255,255,255,0.02);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 24px;
-    transition: transform 0.3s, background 0.3s;
+    border-radius: 12px; padding: 28px 24px;
+    transition: all 0.3s; cursor: pointer; position: relative; overflow: hidden;
 }
-.info-card:hover, .feature:hover {
+.feature-card::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+    background: transparent; transition: background 0.3s;
+}
+.feature-card:hover {
     background: rgba(255,255,255,0.04);
-    transform: translateY(-2px);
+    transform: translateY(-4px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+    border-color: rgba(255,255,255,0.1);
 }
-.step-num {
-    font-size: 0.8rem;
-    color: var(--primary-red);
-    font-weight: 700;
-    margin-bottom: 12px;
-}
-.info-card h3, .feature h4 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-.info-card p, .feature p {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-}
-.alternate {
-    background: rgba(0,0,0,0.3);
-    padding: 60px 20px;
-    margin: 80px 0 0 0;
-    max-width: 100%;
-    border-top: 1px solid var(--border-color);
-}
-.alternate .grid-4 {
-    max-width: 1000px;
-    margin: 0 auto;
-}
+.feature-card:hover::before { background: var(--primary-red); }
+.feature-card .f-icon { font-size: 1.5rem; margin-bottom: 16px; transition: transform 0.3s; }
+.feature-card:hover .f-icon { transform: translateY(-3px); }
+.feature-card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 8px; }
+.feature-card p { font-size: 0.85rem; color: var(--text-muted); }
 
-/* ================= Footer ================= */
+/* ================= FOOTER ================= */
 .footer {
-    text-align: center;
-    padding: 60px 20px;
-    background: var(--bg-dark);
-    position: relative;
-    z-index: 10;
     border-top: 1px solid var(--border-color);
+    background: rgba(0,0,0,0.5); padding: 60px 20px; text-align: center; margin-top: 60px;
 }
-.footer-brand {
-    font-size: 1.2rem;
-    font-weight: 700;
-    margin-bottom: 12px;
-}
+.footer-brand { font-size: 1.4rem; font-weight: 700; margin-bottom: 12px; }
 .footer-brand span { color: var(--primary-red); }
-.footer p {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-bottom: 24px;
-}
-.footer-links {
-    display: flex;
-    justify-content: center;
-    gap: 24px;
-}
-.footer-links a {
-    color: var(--text-muted);
-    text-decoration: none;
-    font-size: 0.85rem;
-    transition: color 0.3s;
-}
-.footer-links a:hover { color: var(--text-main); }
+.footer p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px; }
+.footer-links { display: flex; justify-content: center; gap: 24px; }
+.footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; transition: color 0.3s; }
+.footer-links a:hover { color: #fff; }
 
-/* ================= Responsive ================= */
+/* ================= RESPONSIVE ================= */
 @media (max-width: 900px) {
-    .grid-4 { grid-template-columns: repeat(2, 1fr); }
-    .nav-links { display: none; }
+    .grid-4, .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .nav-links {
+        display: none; position: absolute; top: 70px; left: 0; width: 100%;
+        background: rgba(12,12,14,0.95); backdrop-filter: blur(20px);
+        flex-direction: column; padding: 20px; border-bottom: 1px solid var(--border-color);
+    }
+    .nav-links.show { display: flex; }
+    .mega-menu { position: static; width: 100%; transform: none; box-shadow: none; border: none; padding: 10px 0; display: none; }
+    .has-dropdown:hover .mega-menu { display: grid; }
+    .mobile-menu-btn { display: block; }
 }
 @media (max-width: 600px) {
-    .grid-4 { grid-template-columns: 1fr; }
-    .hero h1 { font-size: 2rem; }
+    .grid-4, .grid-2 { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 2.2rem; }
     .connection-card { padding: 30px 20px; }
     .steps-indicator { display: none; }
-    .code-display { font-size: 1.8rem; letter-spacing: 4px; }
-    .nav-right .channel-btn { display: none; }
+    .code-display { font-size: 1.8rem; letter-spacing: 6px; }
+    .nav-right { display: none; }
 }
 </style>
 </head>
 <body>
 
-<div class="ambient-glow"></div>
+<div class="bg-layer"></div>
+<div class="bg-grid"></div>
 
 <!-- 1. TOP NAVBAR -->
 <nav class="navbar">
-    <div class="nav-brand">MAZARI<span>MD</span></div>
-    <div class="nav-links">
-        <a href="#" class="active">Home</a>
-        <a href="#how-it-works">How It Works</a>
-        <a href="#features">Features</a>
+    <div class="nav-brand">
+        MAZARI<span class="red">MD</span>
+        <span class="brand-badge">VIP CONTROL</span>
     </div>
+    
+    <div class="nav-links" id="navLinks">
+        <a href="#home" class="active">HOME</a>
+        <div class="has-dropdown">
+            FEATURES ▾
+            <div class="mega-menu">
+                <div class="mega-item" onclick="openModal('Admin Lock', 'Control who can access administrative bot commands.', '🔐')">
+                    <div class="mega-icon">🔐</div>
+                    <div class="mega-text"><h4>Admin Lock</h4><p>Command protection</p></div>
+                </div>
+                <div class="mega-item" onclick="openModal('Owner Lock', 'Owner-level bot execution protection.', '👑')">
+                    <div class="mega-icon">👑</div>
+                    <div class="mega-text"><h4>Owner Lock</h4><p>Ultimate authority</p></div>
+                </div>
+                <div class="mega-item" onclick="openModal('GC Status', 'Group monitoring and status controls.', '🛡️')">
+                    <div class="mega-icon">🛡️</div>
+                    <div class="mega-text"><h4>GC Status</h4><p>Group management</p></div>
+                </div>
+                <div class="mega-item" onclick="openModal('Auto React', 'Automated reaction functionality for messages.', '❤️')">
+                    <div class="mega-icon">❤️</div>
+                    <div class="mega-text"><h4>Auto React</h4><p>Smart engagement</p></div>
+                </div>
+                <div class="mega-item" onclick="openModal('Multi Session', 'Run completely independent WhatsApp sessions.', '🚀')">
+                    <div class="mega-icon">🚀</div>
+                    <div class="mega-text"><h4>Multi Session</h4><p>Parallel processing</p></div>
+                </div>
+                <div class="mega-item" onclick="openModal('Server Isolation', 'Dedicated server-level session separation.', '🌐')">
+                    <div class="mega-icon">🌐</div>
+                    <div class="mega-text"><h4>Server Isolation</h4><p>Maximum stability</p></div>
+                </div>
+            </div>
+        </div>
+        <a href="#how-it-works">HOW IT WORKS</a>
+        <a href="#why-mazari">WHY MAZARI</a>
+    </div>
+
     <div class="nav-right">
-        <a href="https://whatsapp.com/channel/0029VaN1c2F7j6g25yB73I1v" target="_blank" class="channel-btn">WhatsApp Channel</a>
-        <span class="status-indicator"><span class="dot"></span> PRODUCTION</span>
+        <span class="status-indicator"><span class="dot"></span> SYSTEM ONLINE</span>
+        <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
     </div>
 </nav>
 
 <!-- 2. HERO SECTION -->
-<header class="hero">
-    <div class="badge-small">MAZARI MD • MULTI-SERVER WHATSAPP BOT</div>
+<header class="hero reveal" id="home">
+    <div class="badge-small">MAZARI MD • PREMIUM BOT INFRASTRUCTURE</div>
     <h1>Connect Your WhatsApp Bot</h1>
-    <p>Select a server, enter your WhatsApp number, and securely generate your pairing code.</p>
+    <p>Select a verified server, enter your WhatsApp number, and securely generate your pairing code.</p>
 </header>
 
 <!-- 3. MAIN CONNECTION CARD -->
-<main class="main-container">
+<main class="main-container reveal">
     <div class="card connection-card">
         <h2>Connect WhatsApp</h2>
-        <p class="subtitle">Follow the steps below to connect your account.</p>
+        <p class="subtitle">Complete the setup wizard below to initialize session.</p>
         
         <div class="steps-indicator">
-            <div class="step active" id="step1">01 Select Server</div>
-            <div class="step" id="step2">02 Enter Number</div>
-            <div class="step" id="step3">03 Pair WhatsApp</div>
+            <div class="step active" id="step1">01 SELECT SERVER</div>
+            <div class="step" id="step2">02 ENTER NUMBER</div>
+            <div class="step" id="step3">03 PAIRING CODE</div>
         </div>
 
-        <!-- 4. SERVER SELECTION -->
+        <!-- SERVER SELECTION -->
         <div class="form-group" id="servers">
-            <label for="serverSelect">Select Server</label>
-            <p class="input-subtext">Choose a server to host your bot session.</p>
+            <label for="serverSelect">Select Node</label>
+            <p class="input-subtext">Choose an available server to host your session.</p>
             <select id="serverSelect" onchange="updateStep(2)"></select>
         </div>
 
-        <!-- 5. NUMBER INPUT -->
+        <!-- NUMBER INPUT -->
         <div class="form-group">
             <label for="number">WhatsApp Number</label>
-            <p class="input-subtext">Enter the number you want to connect.</p>
-            <input type="tel" id="number" placeholder="Enter number without country code" oninput="updateStep(2)">
+            <p class="input-subtext">Enter your international WhatsApp number.</p>
+            <input type="tel" id="number" placeholder="Enter number" oninput="updateStep(2)">
         </div>
 
-        <!-- 6. PAIR BUTTON -->
+        <!-- PAIR BUTTON -->
         <button id="actionBtn" class="primary-btn" onclick="getCode()">
             <span class="spinner" id="spinner"></span>
             <span id="btnText">Generate Pairing Code</span>
         </button>
 
-        <!-- 7. PAIRING CODE RESULT -->
+        <!-- PAIRING CODE RESULT -->
         <div class="result-box" id="resultBox">
             <div id="successView" style="display: none;">
-                <div class="result-label">Pairing Code</div>
+                <div class="result-label">SECURE PAIRING CODE</div>
                 <div class="code-display" id="codeDisplay">----</div>
-                <p class="instruction-text">Open WhatsApp → Linked Devices → Link a Device → Enter this code.</p>
+                <p class="instruction-text">Open WhatsApp → Linked Devices → Link a Device</p>
                 <button class="copy-btn" id="copyBtn" onclick="copyCode()">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                     <span id="copyText">COPY CODE</span>
                 </button>
-                <div class="status-waiting"><span class="dot pulse"></span> Waiting for WhatsApp connection</div>
+                <div class="status-waiting"><span class="dot pulse"></span> Waiting for handshake...</div>
             </div>
             <div id="errorView" style="display: none;">
                 <div class="error-display" id="errorDisplay">Error</div>
@@ -622,68 +631,127 @@ button.primary-btn:disabled {
 </main>
 
 <!-- 8. HOW IT WORKS -->
-<section id="how-it-works" class="info-section">
+<section id="how-it-works" class="info-section reveal">
     <h2>How It Works</h2>
+    <p class="sec-sub">Four simple steps to automate your WhatsApp.</p>
     <div class="grid-4">
-        <div class="info-card">
-            <div class="step-num">01</div>
-            <h3>Select Server</h3>
-            <p>Choose an available MAZARI MD server from the dropdown.</p>
+        <div class="feature-card">
+            <div class="f-icon">01</div>
+            <h3>Select Node</h3>
+            <p>Choose an available MAZARI MD server from the dropdown list.</p>
         </div>
-        <div class="info-card">
-            <div class="step-num">02</div>
-            <h3>Enter Number</h3>
-            <p>Select your country and enter your WhatsApp number.</p>
+        <div class="feature-card">
+            <div class="f-icon">02</div>
+            <h3>Enter Identity</h3>
+            <p>Input your target WhatsApp number with the correct country code.</p>
         </div>
-        <div class="info-card">
-            <div class="step-num">03</div>
-            <h3>Generate Code</h3>
-            <p>Securely request your official WhatsApp pairing code.</p>
+        <div class="feature-card">
+            <div class="f-icon">03</div>
+            <h3>Generate</h3>
+            <p>Securely request your official WhatsApp pairing code payload.</p>
         </div>
-        <div class="info-card">
-            <div class="step-num">04</div>
-            <h3>Connect</h3>
-            <p>Enter the code inside WhatsApp Linked Devices.</p>
+        <div class="feature-card">
+            <div class="f-icon">04</div>
+            <h3>Handshake</h3>
+            <p>Enter the code inside WhatsApp Linked Devices to verify.</p>
         </div>
     </div>
 </section>
 
-<!-- 9. FEATURES / TRUST SECTION -->
-<section id="features" class="info-section alternate">
-    <div class="grid-4">
-        <div class="feature">
-            <h4>Multi-Session</h4>
-            <p>Run independent WhatsApp sessions concurrently.</p>
+<!-- 9. WHY MAZARI MD -->
+<section id="why-mazari" class="info-section reveal">
+    <h2>Why MAZARI MD?</h2>
+    <p class="sec-sub">Built for professional multi-session WhatsApp automation.</p>
+    <div class="grid-2">
+        <div class="feature-card" onclick="openModal('Multi-Session Engine', 'Run completely independent WhatsApp sessions concurrently without overlap.', '🚀')">
+            <div class="f-icon">🚀</div>
+            <h3>Multi-Session Engine</h3>
+            <p>Independent, parallel WhatsApp sessions.</p>
         </div>
-        <div class="feature">
-            <h4>Server Isolation</h4>
-            <p>Sessions remain strictly isolated between physical servers.</p>
+        <div class="feature-card" onclick="openModal('Server Isolation', 'Hardware and software level isolation between server nodes for maximum stability.', '🌐')">
+            <div class="f-icon">🌐</div>
+            <h3>Server Isolation</h3>
+            <p>Dedicated session separation.</p>
         </div>
-        <div class="feature">
-            <h4>Secure Pairing</h4>
-            <p>Pair exclusively using WhatsApp's official linking flow.</p>
+        <div class="feature-card" onclick="openModal('Security Controls', 'Advanced Admin and Owner locks to protect critical bot commands.', '🔐')">
+            <div class="f-icon">🔐</div>
+            <h3>Security Controls</h3>
+            <p>Protect administrative commands.</p>
         </div>
-        <div class="feature">
-            <h4>Production Ready</h4>
-            <p>Designed for continuous, stable bot session management.</p>
+        <div class="feature-card" onclick="openModal('Official Handshake', 'We utilize the official WhatsApp companion device linking flow.', '📱')">
+            <div class="f-icon">📱</div>
+            <h3>Official Handshake</h3>
+            <p>Secure official device pairing.</p>
         </div>
     </div>
 </section>
 
 <!-- 11. FOOTER -->
-<footer class="footer">
+<footer class="footer reveal">
     <div class="footer-brand">MAZARI<span>MD</span></div>
     <p>Professional multi-session WhatsApp bot infrastructure.</p>
     <div class="footer-links">
-        <a href="#">Home</a>
-        <a href="#how-it-works">How It Works</a>
-        <a href="https://whatsapp.com/channel/0029VaN1c2F7j6g25yB73I1v" target="_blank">WhatsApp Channel</a>
+        <a href="#home">Home</a>
+        <a href="#how-it-works">Setup Guide</a>
+        <a href="https://whatsapp.com/channel/0029VaN1c2F7j6g25yB73I1v" target="_blank">Official Channel</a>
     </div>
 </footer>
 
+<!-- MODAL OVERLAY -->
+<div class="modal-overlay" id="featureModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <div class="modal-icon" id="mIcon"></div>
+        <h3 class="modal-title" id="mTitle"></h3>
+        <p class="modal-desc" id="mDesc"></p>
+        <span class="modal-badge">Available in MAZARI MD</span>
+    </div>
+</div>
+
 <script>
 // ==========================================
-// SERVER CONFIGURATION
+// SCROLL ANIMATIONS (IntersectionObserver)
+// ==========================================
+document.addEventListener("DOMContentLoaded", () => {
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    reveals.forEach(rev => observer.observe(rev));
+});
+
+// ==========================================
+// MODAL LOGIC
+// ==========================================
+const modal = document.getElementById('featureModal');
+function openModal(title, desc, icon) {
+    document.getElementById('mTitle').innerText = title;
+    document.getElementById('mDesc').innerText = desc;
+    document.getElementById('mIcon').innerText = icon;
+    modal.style.display = 'flex';
+    // Trigger reflow for animation
+    setTimeout(() => modal.classList.add('active'), 10);
+}
+function closeModal() {
+    modal.classList.remove('active');
+    setTimeout(() => modal.style.display = 'none', 300);
+}
+modal.addEventListener('click', (e) => {
+    if(e.target === modal) closeModal();
+});
+
+// Mobile menu
+function toggleMenu() {
+    document.getElementById('navLinks').classList.toggle('show');
+}
+
+// ==========================================
+// SERVER CONFIGURATION (UNTOUCHED)
 // ==========================================
 const SERVERS = [
   { name: "Server 01", url: "https://mazari-bot-01-f026a4cd53d1.herokuapp.com" },
@@ -776,12 +844,10 @@ function updateStep(stepNum) {
 // PAIRING LOGIC (100% PRESERVED)
 // ==========================================
 async function getCode() {
-    // Get fully formatted E.164 number and strip everything except digits
     const fullNumber = iti.getNumber().replace(/[^0-9]/g, '');
     const countryData = iti.getSelectedCountryData();
     const dialCode = countryData.dialCode || "";
     
-    // Validate that it has a real country code and a reasonable subscriber number length (e.g., at least 7 digits)
     const subscriberNumberLength = fullNumber.length - dialCode.length;
     if (!fullNumber || !dialCode || subscriberNumberLength < 7) {
         showError("PLEASE ENTER A VALID WHATSAPP NUMBER");
@@ -791,7 +857,6 @@ async function getCode() {
     const selectedUrl = serverSelect.value;
     const selectedServerName = serverSelect.options[serverSelect.selectedIndex].text.split('•')[0].trim();
 
-    // Set Loading State
     actionBtn.disabled = true;
     spinner.style.display = "block";
     btnText.innerText = `Connecting...`;
@@ -802,7 +867,6 @@ async function getCode() {
     document.getElementById('step3').classList.add('active');
 
     try {
-        // Construct URL safely for frontend routing
         const endpoint = selectedUrl ? new URL('/code', selectedUrl).toString() : '/code';
         const targetUrl = `${endpoint}?number=${fullNumber}`;
 
@@ -824,7 +888,6 @@ async function getCode() {
     } catch (e) {
         showError("UNABLE TO CONNECT TO THE SELECTED SERVER. PLEASE TRY AGAIN.");
     } finally {
-        // Restore Button State
         actionBtn.disabled = false;
         spinner.style.display = "none";
         btnText.innerText = "Generate Pairing Code";
@@ -858,7 +921,6 @@ async function copyCode() {
     }
 }
 
-// Enter key support
 numberInput.addEventListener("keydown", function(e) {
     if (e.key === "Enter" && !actionBtn.disabled) {
         e.preventDefault();
